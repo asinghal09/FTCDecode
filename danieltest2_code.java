@@ -98,7 +98,7 @@ public class DanielTest2 extends LinearOpMode{
             }
 
             //moves up the intake
-            while (gamepad1.dpad_up){
+            if (gamepad1.dpad_up){
                 if (input1.getPosition() == inputMaxPos || input2.getPosition() == inputMaxPos){
                     break;
                 }
@@ -106,7 +106,7 @@ public class DanielTest2 extends LinearOpMode{
                 input2.setPosition(input2.getPosition() + 0.1);
             }
 
-            while (gamepad1.dpad_down) {
+            if (gamepad1.dpad_down) {
                 if (input1.getPosition() == inputMinPos || input2.getPosition() == inputMinPos){
                     break;
                 }
