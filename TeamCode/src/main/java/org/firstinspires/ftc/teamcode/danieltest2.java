@@ -1,4 +1,4 @@
-//package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //@Config
 @TeleOp
-public class DanielTest2 extends LinearOpMode{
+public class danieltest2 extends LinearOpMode{
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backRight;
@@ -18,9 +18,9 @@ public class DanielTest2 extends LinearOpMode{
     DcMotor LWheel;
     DcMotor RWheel;
 
-    Servo transfer1;
+    //Servo transfer1;
 
-    Servo transfer2;
+    //Servo transfer2;
 
     Servo input1;
 
@@ -42,8 +42,8 @@ public class DanielTest2 extends LinearOpMode{
         LWheel = hardwareMap.get(DcMotor.class, "LWheel");
         RWheel = hardwareMap.get(DcMotor.class, "RWheel");
         RWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        transfer1 = hardwareMap.get(Servo.class, "transfer1");
-        transfer2 = hardwareMap.get(Servo.class, "transfer2");
+        //transfer1 = hardwareMap.get(Servo.class, "transfer1");
+        //transfer2 = hardwareMap.get(Servo.class, "transfer2");
         input1 = hardwareMap.get(Servo.class, "input1");
         input2 = hardwareMap.get(Servo.class, "input2");
 
@@ -100,7 +100,8 @@ public class DanielTest2 extends LinearOpMode{
             //moves up the intake
             if (gamepad1.dpad_up){
                 if (input1.getPosition() == inputMaxPos || input2.getPosition() == inputMaxPos){
-                    break;
+                    input1.setPosition(input1.getPosition());
+                    input2.setPosition(input2.getPosition());
                 }
                 input1.setPosition(input1.getPosition() + 0.1);
                 input2.setPosition(input2.getPosition() + 0.1);
