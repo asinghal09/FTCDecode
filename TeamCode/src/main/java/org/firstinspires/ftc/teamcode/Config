@@ -1,0 +1,32 @@
+Control Hub
+    Motors (all GoBilda 5202/3/4 Series)
+        0 = backRight
+            perpendicular deadwheel
+        1 = frontRight
+        2 = backLeft
+        3 = frontLeft
+            parallel deadwheel
+
+
+    Servos
+        0
+        1
+        2
+        3 = rightHook (Servo)
+        4
+        5
+
+Expansion Hub
+    Motors
+        0 = wheelLeft
+        1 = wheelRight
+        2 = intake
+        3 = transfer
+
+    Servos
+        0 = Trigger (Servo)
+        1
+        2
+        3
+        4
+        5
