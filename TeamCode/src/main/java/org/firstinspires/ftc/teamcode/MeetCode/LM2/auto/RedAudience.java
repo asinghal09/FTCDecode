@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto;
+package org.firstinspires.ftc.teamcode.MeetCode.LM2.auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -21,17 +21,15 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Disabled
+
 @Config
 @Autonomous
-public class RedAudienceAutoPreload extends LinearOpMode{
-
-    private static final Logger log = LoggerFactory.getLogger(RedAudienceAutoPreload.class);
+public class RedAudience extends LinearOpMode{
 
     @Override
     public void runOpMode(){
 
-        Pose2d initialPose = new Pose2d(54, 18, Math.toRadians(-4));
+        Pose2d initialPose = new Pose2d(53, 18, Math.toRadians(-4));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Intake intake = new Intake(hardwareMap);
         Transfer transfer = new Transfer(hardwareMap);

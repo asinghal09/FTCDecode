@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1;
+package org.firstinspires.ftc.teamcode.MeetCode.LM2;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,11 +8,13 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-@Disabled
+
 @TeleOp
 @Config
-public class twoControllerTeleop extends LinearOpMode {
+public class TeleOp11_23 extends LinearOpMode {
     DcMotor wheelLeft;
     DcMotor wheelRight;
     DcMotor intake;
@@ -26,14 +27,18 @@ public class twoControllerTeleop extends LinearOpMode {
 
     DistanceSensor distanceSensor;
 
+    private VoltageSensor batteryVoltageSensor;
+
 
     public static double drivingMult = 0.75;
     public static double turningMult = 0.8;
-    public static double wheelSpeed = -0.95;
+    public static double wheelSpeed = 0.95;
     public static double intakeSpeed = -1;
-    public static double transferSpeed = 1;
+    public static double transferSpeed = -1;
     public static double triggerFlatPos = 0.42;
     public static double triggerLaunchPos = 0.94;
+
+    double distance;
 
     public static double targetDistance = 120;
 
@@ -55,20 +60,24 @@ public class twoControllerTeleop extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        //distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        wheelRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         wheelRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         wheelLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         trigger.setPosition(triggerFlatPos);
 
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
         waitForStart();
 
         while(opModeIsActive()) {
+
 
             double driving = -gamepad1.right_stick_y * drivingMult; // Forward/backward
             double turning = gamepad1.left_stick_x * turningMult; // Turning
@@ -97,6 +106,12 @@ public class twoControllerTeleop extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
+            distance = distanceSensor.getDistance(DistanceUnit.CM);
+
+
+            double voltage = batteryVoltageSensor.getVoltage();
+            double correction = -0.166667 * voltage +3.16667;
+            //14.0 / voltage;
 
             //intake toggle
             boolean currentXState = gamepad2.x;
@@ -136,6 +151,12 @@ public class twoControllerTeleop extends LinearOpMode {
                 isIntaking = true;
             }
             if (gamepad2.b){
+                distance = distanceSensor.getDistance(DistanceUnit.CM);
+                wheelSpeed = (0.00344595 * distance + 0.544257);
+                if(wheelSpeed > 1){
+                    wheelSpeed = 1;
+                }
+
                 wheelRight.setPower(wheelSpeed);
                 wheelLeft.setPower(wheelSpeed);
                 intake.setPower(intakeSpeed);
@@ -143,6 +164,18 @@ public class twoControllerTeleop extends LinearOpMode {
                 isIntaking = true;
                 isLaunching = true;
             }
+
+
+            if(isLaunching){
+                distance = distanceSensor.getDistance(DistanceUnit.CM);
+                wheelSpeed = 0.00344595 * distance + 0.544257;
+                if(wheelSpeed > 1){
+                    wheelSpeed = 1;
+                }
+                wheelRight.setPower(wheelSpeed);
+                wheelLeft.setPower(wheelSpeed);
+            }
+
 
             if (gamepad2.dpad_up)
                 transfer.setPower(transferSpeed);
@@ -170,8 +203,7 @@ public class twoControllerTeleop extends LinearOpMode {
 
             }
 
-            //Distance sensor stuff
-            //double distance = distanceSensor.getDistance(DistanceUnit.CM);
+
 
 
             if(gamepad2.left_trigger > 0.5){
@@ -182,62 +214,15 @@ public class twoControllerTeleop extends LinearOpMode {
                 wheelLeft.setPower(-1);
                 wheelRight.setPower(-1);
             }
-            /*
-            if (launching){
-                if(distance > targetDistance) {
-                    while (distance > targetDistance) {
-                        frontLeftPower = -0.4;
-                        backLeftPower = -0.4;
-                        frontRightPower = -0.4;
-                        backRightPower = -0.4;
-
-                        // Set motor powers
-                        frontLeft.setPower(frontLeftPower);
-                        frontRight.setPower(frontRightPower);
-                        backLeft.setPower(backLeftPower);
-                        backRight.setPower(backRightPower);
-
-                        distance = distanceSensor.getDistance(DistanceUnit.CM);
-
-                    }
-                    frontLeft.setPower(0);
-                    backLeft.setPower(0);
-                    frontRight.setPower(0);
-                    backRight.setPower(0);
-                    launching = false;
-                }
-                else if (distance < targetDistance - 35){
-                    while (distance < targetDistance -35) {
-                        frontLeftPower = 0.4;
-                        backLeftPower = 0.4;
-                        frontRightPower = 0.4;
-                        backRightPower = 0.4;
-
-                        // Set motor powers
-                        frontLeft.setPower(frontLeftPower);
-                        frontRight.setPower(frontRightPower);
-                        backLeft.setPower(backLeftPower);
-                        backRight.setPower(backRightPower);
-
-                        distance = distanceSensor.getDistance(DistanceUnit.CM);
-
-                    }
-                    frontLeft.setPower(0);
-                    backLeft.setPower(0);
-                    frontRight.setPower(0);
-                    backRight.setPower(0);
-                    launching = false;
-                }
 
 
-            }
-            */
 
             if(gamepad2.right_trigger > 0.5) {
                 intake.setPower(-intakeSpeed);
             }
 
-            //telemetry.addData("distance", distance);
+            telemetry.addData("distance", distance);
+            telemetry.addData("flywheel speed", wheelSpeed);
             telemetry.update();
 
         }

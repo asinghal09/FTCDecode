@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto;
+package org.firstinspires.ftc.teamcode.MeetCode.LM2.auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -21,17 +21,15 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Disabled
 @Config
 @Autonomous
-public class RedAudienceAuto3 extends LinearOpMode{
+public class RedGoal extends LinearOpMode{
 
-    private static final Logger log = LoggerFactory.getLogger(RedAudienceAuto3.class);
 
     @Override
     public void runOpMode(){
 
-        Pose2d initialPose = new Pose2d(54, 18, Math.toRadians(-4));
+        Pose2d initialPose = new Pose2d(-55, 52, Math.toRadians(-52));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Intake intake = new Intake(hardwareMap);
         Transfer transfer = new Transfer(hardwareMap);
@@ -40,20 +38,20 @@ public class RedAudienceAuto3 extends LinearOpMode{
 
 
         Action backFromGoal = drive.actionBuilder(initialPose)
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-28, 25,Math.toRadians(-52)), Math.toRadians(128))
+                .splineToLinearHeading(new Pose2d(-28, 25,Math.toRadians(-52)), Math.toRadians(-52))
                 .build();
 
         Action to1stLine = drive.actionBuilder(new Pose2d (-26, 23, Math.toRadians(-52)))
-                .setReversed(false)
                 .splineToSplineHeading(new Pose2d(-16,28, Math.toRadians(85)),Math.PI/2)
                 .build();
 
         Action pickup1stLine = drive.actionBuilder(new Pose2d(-16,28, Math.toRadians(85)))
-                .lineToY(45, new TranslationalVelConstraint(4.2)) // forward into 1st line of balls
+                .lineToY(38, new TranslationalVelConstraint(6)) // forward into 1st line of balls
+
+                .lineToY(48, new TranslationalVelConstraint(4)) // forward into 1st line of balls
                 .build();
 
-        Action toGoalWFirstLine = drive.actionBuilder(new Pose2d(-16, 45, Math.toRadians(85)))
+        Action toGoalWFirstLine = drive.actionBuilder(new Pose2d(-16, 48, Math.toRadians(85)))
                 .setReversed(true)
                 //.splineToLinearHeading(new Pose2d(-20, 23, Math.toRadians(30)), Math.toRadians(210))
                 .splineToLinearHeading(new Pose2d(-28,25,Math.toRadians(-52)), 26*Math.PI/35)
@@ -65,11 +63,13 @@ public class RedAudienceAuto3 extends LinearOpMode{
                 .build();
 
         Action pickup2ndLine = drive.actionBuilder(new Pose2d(6.5,28, Math.toRadians(85)))
-                .lineToY(45, new TranslationalVelConstraint(4.2)) // forward into 1st line of balls
+                .lineToY(38, new TranslationalVelConstraint(6)) // forward into 1st line of balls
+                .lineToY(48, new TranslationalVelConstraint(4)) // forward into 1st line of balls
+
                 .build();
 
 
-        Action toGoalWSecondLine = drive.actionBuilder(new Pose2d(6.5, 45, Math.toRadians(85)))
+        Action toGoalWSecondLine = drive.actionBuilder(new Pose2d(6.5, 48, Math.toRadians(85)))
                 .setReversed(true)
                 //.splineTo(new Vector2d(0, 23), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(-28,25,Math.toRadians(-52)), 26*Math.PI/35)
@@ -89,19 +89,21 @@ public class RedAudienceAuto3 extends LinearOpMode{
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
                                 flywheels.wheelsOn(),
-                                new SleepAction(2)
+                                new SleepAction(0.15),
+                                transfer.transferOn(),
+                                intake.intakeOn()
                         ),
-                        transfer.transferOn(),
-                        new SleepAction(0.2),
-                        intake.intakeOn(),
-                        new SleepAction(2.5),
+                        new SleepAction(1.5),
                         trigger.triggerUp(),
                         new SleepAction(1),
                         flywheels.wheelsOff(),
                         trigger.triggerDown(),
-                        to1stLine,
-                        intake.intakeOn(),              //intake 1st line
-                        transfer.transferOn(),
+                        new ParallelAction(
+                            to1stLine,
+                            intake.intakeOn(),              //intake 1st line
+                            transfer.transferOn()
+                        ),
+
                         pickup1stLine,
                         new SleepAction(0.15),
                         transfer.transferOff(),
@@ -110,28 +112,33 @@ public class RedAudienceAuto3 extends LinearOpMode{
                         new ParallelAction(                 //launch 1st line
                                 toGoalWFirstLine,
                                 flywheels.wheelsOn(),
-                                new SleepAction(0.5),
+                                new SleepAction(1.9),
                                 transfer.transferOn()
                         ),
-                        new SleepAction(2.5),
+                        new SleepAction(1.75),
                         trigger.triggerUp(),
                         new SleepAction(1),
                         flywheels.wheelsOff(),
                         trigger.triggerDown(),
-                        to2ndLine,
-                        intake.intakeOn(),              //intake 2nd line
-                        transfer.transferOn(),
+                        new ParallelAction(
+                                to2ndLine,
+                                intake.intakeOn(),              //intake 2nd line
+                                transfer.transferOn()
+                        ),
                         pickup2ndLine,
-                        new SleepAction(0.15),
+                        new SleepAction(0.1),
                         transfer.transferOff(),
                         new SleepAction(0.25),
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
                                 flywheels.wheelsOn(),
-                                new SleepAction(2.4),
+                                new SleepAction(5.75),
                                 transfer.transferOn()
                         ),
-                        new SleepAction(1),
+                        trigger.triggerUp(),
+                        new SleepAction(0.75),
+                        trigger.triggerDown(),
+
                         moveFromLine
 
                         /*trigger.triggerUp(),

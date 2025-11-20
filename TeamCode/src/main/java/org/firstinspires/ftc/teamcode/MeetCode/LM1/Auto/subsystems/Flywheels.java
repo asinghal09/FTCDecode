@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class Flywheels {
     private DcMotorEx leftFlywheel, rightFlywheel;
-    public static double fWheelPower = 0.9;
+    public static double fWheelPower = 0.95;
     public Flywheels(HardwareMap hardwareMap) {
         leftFlywheel  = hardwareMap.get(DcMotorEx.class, "wheelLeft");
         rightFlywheel = hardwareMap.get(DcMotorEx.class, "wheelRight");

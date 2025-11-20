@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Flywheels;
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@Disabled
 @Config
 @Autonomous
 public class BlueGoalAuto3 extends LinearOpMode{
@@ -61,10 +62,10 @@ public class BlueGoalAuto3 extends LinearOpMode{
                 .build();
 
         Action pickup1stLine = drive.actionBuilder(mirror(new Pose2d(-16,28, Math.toRadians(85))))
-                .lineToY(mirror(45), new TranslationalVelConstraint(4.2)) // forward into 1st line of balls
+                .lineToY(mirror(47), new TranslationalVelConstraint(4.1)) // forward into 1st line of balls
                 .build();
 
-        Action toGoalWFirstLine = drive.actionBuilder(mirror(new Pose2d(-16, 45, Math.toRadians(85))))
+        Action toGoalWFirstLine = drive.actionBuilder(mirror(new Pose2d(-16, 47, Math.toRadians(85))))
                 .setReversed(true)
                 //.splineToLinearHeading(new Pose2d(-20, 23, Math.toRadians(30)), Math.toRadians(210))
                 .splineToLinearHeading(mirror(new Pose2d(-28,25,Math.toRadians(-52))), mirror(26*Math.PI/35))
@@ -76,11 +77,11 @@ public class BlueGoalAuto3 extends LinearOpMode{
                 .build();
 
         Action pickup2ndLine = drive.actionBuilder(mirror(new Pose2d(6.5,28, Math.toRadians(85))))
-                .lineToY(mirror(45), new TranslationalVelConstraint(4.2)) // forward into 1st line of balls
+                .lineToY(mirror(47), new TranslationalVelConstraint(4.1)) // forward into 1st line of balls
                 .build();
 
 
-        Action toGoalWSecondLine = drive.actionBuilder(mirror(new Pose2d(6.5, 45, Math.toRadians(85))))
+        Action toGoalWSecondLine = drive.actionBuilder(mirror(new Pose2d(6.5, 47, Math.toRadians(85))))
                 .setReversed(true)
                 //.splineTo(new Vector2d(0, 23), Math.toRadians(-90))
                 .splineToLinearHeading(mirror(new Pose2d(-28,25,Math.toRadians(-52))), mirror( 26*Math.PI/35))
@@ -139,7 +140,7 @@ public class BlueGoalAuto3 extends LinearOpMode{
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
                                 flywheels.wheelsOn(),
-                                new SleepAction(2.4),
+                                new SleepAction(2.8),
                                 transfer.transferOn()
                         ),
                         new SleepAction(1),
