@@ -18,12 +18,13 @@ import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 
 @Config
 @Autonomous
 public class RedGoal extends LinearOpMode{
+    private VoltageSensor batteryVoltageSensor;
 
 
     @Override
@@ -35,6 +36,10 @@ public class RedGoal extends LinearOpMode{
         Transfer transfer = new Transfer(hardwareMap);
         Flywheels flywheels = new Flywheels(hardwareMap);
         Trigger trigger = new Trigger(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        double targetVoltage = 12.3;
+        double correction = targetVoltage / batteryVoltageSensor.getVoltage();
 
 
         Action backFromGoal = drive.actionBuilder(initialPose)
@@ -88,7 +93,7 @@ public class RedGoal extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(correction),
                                 new SleepAction(0.15),
                                 transfer.transferOn(),
                                 intake.intakeOn()
@@ -111,7 +116,7 @@ public class RedGoal extends LinearOpMode{
                         //intake.intakeOff(),
                         new ParallelAction(                 //launch 1st line
                                 toGoalWFirstLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(correction),
                                 new SleepAction(1.9),
                                 transfer.transferOn()
                         ),
@@ -131,13 +136,12 @@ public class RedGoal extends LinearOpMode{
                         new SleepAction(0.25),
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(correction),
                                 new SleepAction(5.75),
                                 transfer.transferOn()
                         ),
                         trigger.triggerUp(),
                         new SleepAction(0.75),
-                        trigger.triggerDown(),
 
                         moveFromLine
 

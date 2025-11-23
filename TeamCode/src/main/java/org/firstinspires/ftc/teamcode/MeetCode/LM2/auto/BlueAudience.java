@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto;
+package org.firstinspires.ftc.teamcode.MeetCode.LM2.auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -9,23 +9,20 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Flywheels;
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Disabled
+
 @Config
 @Autonomous
-public class BlueAudienceAutoPreload extends LinearOpMode{
+public class BlueAudience extends LinearOpMode{
 
-    private static final Logger log = LoggerFactory.getLogger(BlueAudienceAutoPreload.class);
     private Pose2d mirror(Pose2d p) {
         return new Pose2d(p.position.x,-p.position.y, -p.heading.toDouble());
     }
@@ -39,15 +36,23 @@ public class BlueAudienceAutoPreload extends LinearOpMode{
     private double mirror(double y){
         return -y;
     }
+
+    private VoltageSensor batteryVoltageSensor;
+
     @Override
     public void runOpMode(){
 
-        Pose2d initialPose = mirror(new Pose2d(54, 18, Math.toRadians(-4)));
+        Pose2d initialPose = mirror(new Pose2d(53, 18, Math.toRadians(-4)));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Intake intake = new Intake(hardwareMap);
         Transfer transfer = new Transfer(hardwareMap);
         Flywheels flywheels = new Flywheels(hardwareMap);
         Trigger trigger = new Trigger(hardwareMap);
+
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        double targetVoltage = 12.3;
+        double correction = targetVoltage / batteryVoltageSensor.getVoltage();
 
 
         Action backFromGoal = drive.actionBuilder(initialPose)
@@ -57,7 +62,7 @@ public class BlueAudienceAutoPreload extends LinearOpMode{
 
         Action back = drive.actionBuilder(mirror(new Pose2d (-26, 23, Math.toRadians(-52))))
                 .setReversed(false)
-                .splineToConstantHeading(mirror(new Vector2d(0,24)),0)
+                .splineToConstantHeading(mirror(new Vector2d(0,24)),mirror(0))
                 .build();
 
 
@@ -69,7 +74,7 @@ public class BlueAudienceAutoPreload extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn(1)
+                                flywheels.wheelsOn(correction)
                         ),
                         new SleepAction(1),
                         transfer.transferOn(),

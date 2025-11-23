@@ -88,7 +88,7 @@ public class RedAudienceAuto3 extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(2)
                         ),
                         transfer.transferOn(),
@@ -109,7 +109,7 @@ public class RedAudienceAuto3 extends LinearOpMode{
                         //intake.intakeOff(),
                         new ParallelAction(                 //launch 1st line
                                 toGoalWFirstLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(0.5),
                                 transfer.transferOn()
                         ),
@@ -127,7 +127,7 @@ public class RedAudienceAuto3 extends LinearOpMode{
                         new SleepAction(0.25),
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(2.4),
                                 transfer.transferOn()
                         ),

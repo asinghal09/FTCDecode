@@ -58,7 +58,7 @@ public class RedAudienceAutoPreload extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(1)
                         ),
                         new SleepAction(1),
                         transfer.transferOn(),

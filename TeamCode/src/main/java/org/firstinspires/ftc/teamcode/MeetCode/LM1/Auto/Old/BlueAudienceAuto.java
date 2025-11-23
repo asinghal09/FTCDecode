@@ -99,7 +99,7 @@ public class BlueAudienceAuto extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(
                                 toGoalwPreload,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(1)
                         ),
                         transfer.transferOn(),          //launch preload
                         intake.intakeOn(),
@@ -118,7 +118,7 @@ public class BlueAudienceAuto extends LinearOpMode{
                         //intake.intakeOff(),
                         new ParallelAction(
                                 toGoalWFirstLine,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(1)
                         ),
                         transfer.transferOn(),          //launch 1st line
                         //intake.intakeOn(),

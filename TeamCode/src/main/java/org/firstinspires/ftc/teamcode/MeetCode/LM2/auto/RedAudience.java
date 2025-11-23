@@ -20,11 +20,14 @@ import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 
 @Config
 @Autonomous
 public class RedAudience extends LinearOpMode{
+
+    private VoltageSensor batteryVoltageSensor;
 
     @Override
     public void runOpMode(){
@@ -35,6 +38,11 @@ public class RedAudience extends LinearOpMode{
         Transfer transfer = new Transfer(hardwareMap);
         Flywheels flywheels = new Flywheels(hardwareMap);
         Trigger trigger = new Trigger(hardwareMap);
+
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+        double targetVoltage = 12.3;
+        double correction = targetVoltage / batteryVoltageSensor.getVoltage();
 
 
         Action backFromGoal = drive.actionBuilder(initialPose)
@@ -56,7 +64,7 @@ public class RedAudience extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(correction)
                         ),
                         new SleepAction(1),
                         transfer.transferOn(),

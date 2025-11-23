@@ -30,6 +30,7 @@ public class TeleOp11_23 extends LinearOpMode {
     private VoltageSensor batteryVoltageSensor;
 
 
+
     public static double drivingMult = 0.75;
     public static double turningMult = 0.8;
     public static double wheelSpeed = 0.95;
@@ -42,10 +43,15 @@ public class TeleOp11_23 extends LinearOpMode {
 
     public static double targetDistance = 120;
 
+    public static double targetVoltage = 12.3;
+
     boolean isIntaking = false;
     boolean previousXState = false;
     boolean isLaunching = false;
     boolean previousAState = false;
+
+    public static double turnCorrectionSpeed = 0.3;
+    public static long turnTime = 50;
 
     boolean launching = false;
     public void runOpMode(){
@@ -74,11 +80,12 @@ public class TeleOp11_23 extends LinearOpMode {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
+
         waitForStart();
 
         while(opModeIsActive()) {
-
-
+            double voltage = batteryVoltageSensor.getVoltage();
+            double correction = targetVoltage/voltage;
             double driving = -gamepad1.right_stick_y * drivingMult; // Forward/backward
             double turning = gamepad1.left_stick_x * turningMult; // Turning
             double strafing = gamepad1.right_trigger - gamepad1.left_trigger; // Strafing
@@ -109,9 +116,6 @@ public class TeleOp11_23 extends LinearOpMode {
             distance = distanceSensor.getDistance(DistanceUnit.CM);
 
 
-            double voltage = batteryVoltageSensor.getVoltage();
-            double correction = -0.166667 * voltage +3.16667;
-            //14.0 / voltage;
 
             //intake toggle
             boolean currentXState = gamepad2.x;
@@ -151,14 +155,7 @@ public class TeleOp11_23 extends LinearOpMode {
                 isIntaking = true;
             }
             if (gamepad2.b){
-                distance = distanceSensor.getDistance(DistanceUnit.CM);
-                wheelSpeed = (0.00344595 * distance + 0.544257);
-                if(wheelSpeed > 1){
-                    wheelSpeed = 1;
-                }
 
-                wheelRight.setPower(wheelSpeed);
-                wheelLeft.setPower(wheelSpeed);
                 intake.setPower(intakeSpeed);
                 transfer.setPower(transferSpeed);
                 isIntaking = true;
@@ -168,12 +165,14 @@ public class TeleOp11_23 extends LinearOpMode {
 
             if(isLaunching){
                 distance = distanceSensor.getDistance(DistanceUnit.CM);
-                wheelSpeed = 0.00344595 * distance + 0.544257;
-                if(wheelSpeed > 1){
-                    wheelSpeed = 1;
+
+                wheelSpeed = (0.00344595 * distance + 0.544257) * correction;
+
+                if(wheelSpeed > (0.92 * correction)){
+                    wheelSpeed = 0.92 * correction;
                 }
-                wheelRight.setPower(wheelSpeed);
                 wheelLeft.setPower(wheelSpeed);
+                wheelRight.setPower(wheelSpeed);
             }
 
 
@@ -204,15 +203,9 @@ public class TeleOp11_23 extends LinearOpMode {
             }
 
 
-
-
-            if(gamepad2.left_trigger > 0.5){
-                launching = true;
-            }
-
             if(gamepad2.guide){
-                wheelLeft.setPower(-1);
-                wheelRight.setPower(-1);
+                wheelLeft.setPower(-0.92 * correction);
+                wheelRight.setPower(-0.92 * correction);
             }
 
 
@@ -221,8 +214,41 @@ public class TeleOp11_23 extends LinearOpMode {
                 intake.setPower(-intakeSpeed);
             }
 
+            if (gamepad1.dpad_right) {
+                frontLeft.setPower(turnCorrectionSpeed);
+                backLeft.setPower(turnCorrectionSpeed);
+                frontRight.setPower(-turnCorrectionSpeed);
+                backRight.setPower(-turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+
+
+            }
+            if (gamepad1.dpad_left) {
+                frontLeft.setPower(-turnCorrectionSpeed);
+                backLeft.setPower(-turnCorrectionSpeed);
+                frontRight.setPower(turnCorrectionSpeed);
+                backRight.setPower(turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+
+
+            }
+
             telemetry.addData("distance", distance);
-            telemetry.addData("flywheel speed", wheelSpeed);
+            telemetry.addData("flywheel speed", wheelLeft.getPower());
+            telemetry.addData("voltage", voltage);
+            telemetry.addData("correction", correction);
             telemetry.update();
 
         }

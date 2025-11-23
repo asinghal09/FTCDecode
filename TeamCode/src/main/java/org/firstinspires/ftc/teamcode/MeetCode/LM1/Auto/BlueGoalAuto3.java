@@ -100,7 +100,7 @@ public class BlueGoalAuto3 extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(                 //launch preload
                                 backFromGoal,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(0.2),
                                 transfer.transferOn(),
                                 new SleepAction(0.2),
@@ -121,7 +121,7 @@ public class BlueGoalAuto3 extends LinearOpMode{
                         //intake.intakeOff(),
                         new ParallelAction(                 //launch 1st line
                                 toGoalWFirstLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(0.5),
                                 transfer.transferOn()
                         ),
@@ -139,7 +139,7 @@ public class BlueGoalAuto3 extends LinearOpMode{
                         new SleepAction(0.25),
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
-                                flywheels.wheelsOn(),
+                                flywheels.wheelsOn(1),
                                 new SleepAction(2.8),
                                 transfer.transferOn()
                         ),

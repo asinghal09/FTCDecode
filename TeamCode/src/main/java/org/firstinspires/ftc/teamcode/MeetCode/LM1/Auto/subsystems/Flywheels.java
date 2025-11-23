@@ -4,20 +4,28 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @Config
 public class Flywheels {
     private DcMotorEx leftFlywheel, rightFlywheel;
+    private VoltageSensor batteryVoltageSensor;
     public static double fWheelPower = 0.95;
+    public static double targetVoltage = 12.3;
+
     public Flywheels(HardwareMap hardwareMap) {
         leftFlywheel  = hardwareMap.get(DcMotorEx.class, "wheelLeft");
         rightFlywheel = hardwareMap.get(DcMotorEx.class, "wheelRight");
 
+
         // Reverse one side so they spin in the same physical direction
         leftFlywheel.setDirection(DcMotorEx.Direction.REVERSE);
 
+
         leftFlywheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         rightFlywheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
 
     /*
@@ -29,10 +37,10 @@ public class Flywheels {
 
      */
 
-    public Action wheelsOn() {
+    public Action wheelsOn(double correction) {
         return t -> {
-            leftFlywheel.setPower(fWheelPower);
-            rightFlywheel.setPower(fWheelPower);
+            leftFlywheel.setPower(fWheelPower * correction);
+            rightFlywheel.setPower(fWheelPower * correction);
             return false;   // run once
         };
     }
@@ -43,4 +51,7 @@ public class Flywheels {
             return false;   // run once
         };
     }
+
+
+
 }

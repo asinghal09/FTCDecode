@@ -95,7 +95,7 @@ public class BlueGoalAuto2 extends LinearOpMode{
                 new SequentialAction(
                         new ParallelAction(
                                 backFromGoal,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(1)
                         ),
                         transfer.transferOn(),          //launch preload
                         intake.intakeOn(),
@@ -114,7 +114,7 @@ public class BlueGoalAuto2 extends LinearOpMode{
                         //intake.intakeOff(),
                         new ParallelAction(
                                 toGoalWFirstLine,
-                                flywheels.wheelsOn()
+                                flywheels.wheelsOn(1)
                         ),
                         transfer.transferOn(),          //launch 1st line
                         //intake.intakeOn(),
