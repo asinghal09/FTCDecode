@@ -14,10 +14,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Flywheels;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Flywheels;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

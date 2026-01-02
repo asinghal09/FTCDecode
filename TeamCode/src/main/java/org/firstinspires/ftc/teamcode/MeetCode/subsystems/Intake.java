@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems;
+package org.firstinspires.ftc.teamcode.MeetCode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;

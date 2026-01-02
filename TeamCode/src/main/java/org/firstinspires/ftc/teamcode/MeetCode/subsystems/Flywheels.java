@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems;
+package org.firstinspires.ftc.teamcode.MeetCode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 public class Flywheels {
     private DcMotorEx leftFlywheel, rightFlywheel;
     private VoltageSensor batteryVoltageSensor;
-    public static double fWheelPower = 0.95;
+    public static double fWheelPower = 0.8;
     public static double targetVoltage = 12.3;
 
     public Flywheels(HardwareMap hardwareMap) {
@@ -41,6 +41,13 @@ public class Flywheels {
         return t -> {
             leftFlywheel.setPower(fWheelPower * correction);
             rightFlywheel.setPower(fWheelPower * correction);
+            return false;   // run once
+        };
+    }
+    public Action wheelsOnSpeed(double speed) {
+        return t -> {
+            leftFlywheel.setPower(speed);
+            rightFlywheel.setPower(speed);
             return false;   // run once
         };
     }

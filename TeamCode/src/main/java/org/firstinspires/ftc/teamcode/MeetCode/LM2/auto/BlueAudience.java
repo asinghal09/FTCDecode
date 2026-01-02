@@ -9,16 +9,17 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Flywheels;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Flywheels;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Trigger;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 
-
+@Disabled
 @Config
 @Autonomous
 public class BlueAudience extends LinearOpMode{

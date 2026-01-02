@@ -13,14 +13,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Flywheels;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.MeetCode.LM1.Auto.subsystems.Trigger;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Flywheels;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.MeetCode.subsystems.Trigger;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-
+@Disabled
 @Config
 @Autonomous
 public class RedGoal extends LinearOpMode{
@@ -131,13 +131,13 @@ public class RedGoal extends LinearOpMode{
                                 transfer.transferOn()
                         ),
                         pickup2ndLine,
-                        new SleepAction(0.1),
+                        new SleepAction(0.05),
                         transfer.transferOff(),
                         new SleepAction(0.25),
                         new ParallelAction(                 //launch 2nd line
                                 toGoalWSecondLine,
                                 flywheels.wheelsOn(correction),
-                                new SleepAction(5.75),
+                                new SleepAction(5),
                                 transfer.transferOn()
                         ),
                         trigger.triggerUp(),

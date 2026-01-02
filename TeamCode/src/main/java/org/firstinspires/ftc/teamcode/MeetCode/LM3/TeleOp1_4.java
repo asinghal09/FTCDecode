@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM2;
+package org.firstinspires.ftc.teamcode.MeetCode.LM3;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,11 +10,13 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-@Disabled
+
 @TeleOp
 @Config
-public class TeleOp11_23 extends LinearOpMode {
+public class TeleOp1_4 extends LinearOpMode {
     DcMotor wheelLeft;
     DcMotor wheelRight;
     DcMotor intake;
@@ -36,9 +37,10 @@ public class TeleOp11_23 extends LinearOpMode {
     public static double turningMult = 0.8;
     public static double wheelSpeed = 0.95;
     public static double intakeSpeed = -1;
-    public static double transferSpeed = -1;
+    public static double transferSpeed = 0.35;
     public static double triggerFlatPos = 0.42;
     public static double triggerLaunchPos = 0.94;
+    public static double flywheelRatioMult = 0.839951541;
 
     double distance;
 
@@ -51,7 +53,7 @@ public class TeleOp11_23 extends LinearOpMode {
     boolean isLaunching = false;
     boolean previousAState = false;
 
-    public static double turnCorrectionSpeed = 0.15;
+    public static double turnCorrectionSpeed = 0.3;
     public static long turnTime = 50;
 
     boolean launching = false;
@@ -158,7 +160,7 @@ public class TeleOp11_23 extends LinearOpMode {
             if (gamepad2.b){
 
                 intake.setPower(intakeSpeed);
-                transfer.setPower(transferSpeed);
+                transfer.setPower(1);
                 isIntaking = true;
                 isLaunching = true;
             }
@@ -168,10 +170,14 @@ public class TeleOp11_23 extends LinearOpMode {
                 distance = distanceSensor.getDistance(DistanceUnit.CM);
 
                 wheelSpeed = (0.00344595 * distance + 0.544257) * correction;
+                wheelSpeed *= flywheelRatioMult;
+
 
                 if(wheelSpeed > (0.92 * correction)){
                     wheelSpeed = 0.92 * correction;
                 }
+
+
                 wheelLeft.setPower(wheelSpeed);
                 wheelRight.setPower(wheelSpeed);
             }
@@ -244,6 +250,33 @@ public class TeleOp11_23 extends LinearOpMode {
                 backRight.setPower(0);
 
 
+            }
+
+            if (gamepad1.dpad_up) {
+                frontLeft.setPower(turnCorrectionSpeed);
+                backLeft.setPower(turnCorrectionSpeed);
+                frontRight.setPower(turnCorrectionSpeed);
+                backRight.setPower(turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+            }
+            if (gamepad1.dpad_down) {
+                frontLeft.setPower(-turnCorrectionSpeed);
+                backLeft.setPower(-turnCorrectionSpeed);
+                frontRight.setPower(-turnCorrectionSpeed);
+                backRight.setPower(-turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
             }
 
             telemetry.addData("distance", distance);

@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.MeetCode.LM2;
+package org.firstinspires.ftc.teamcode.MeetCode.LM3;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,12 +9,24 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-@Disabled
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.List;
 @TeleOp
 @Config
-public class TeleOp11_23 extends LinearOpMode {
+public class TeleOp1_4ManualSpeed extends LinearOpMode {
     DcMotor wheelLeft;
     DcMotor wheelRight;
     DcMotor intake;
@@ -26,19 +37,21 @@ public class TeleOp11_23 extends LinearOpMode {
     DcMotor backRight;
     DcMotor backLeft;
 
-    DistanceSensor distanceSensor;
 
     private VoltageSensor batteryVoltageSensor;
 
 
+    private VisionPortal visionPortal;
+    private AprilTagProcessor aprilTag;
 
     public static double drivingMult = 0.75;
     public static double turningMult = 0.8;
     public static double wheelSpeed = 0.95;
     public static double intakeSpeed = -1;
-    public static double transferSpeed = -1;
+    public static double transferSpeed = 0.35;
     public static double triggerFlatPos = 0.42;
     public static double triggerLaunchPos = 0.94;
+    public static double flywheelRatioMult = 0.839951541;
 
     double distance;
 
@@ -51,7 +64,7 @@ public class TeleOp11_23 extends LinearOpMode {
     boolean isLaunching = false;
     boolean previousAState = false;
 
-    public static double turnCorrectionSpeed = 0.15;
+    public static double turnCorrectionSpeed = 0.3;
     public static long turnTime = 50;
 
     boolean launching = false;
@@ -67,8 +80,6 @@ public class TeleOp11_23 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -80,6 +91,27 @@ public class TeleOp11_23 extends LinearOpMode {
 
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawTagOutline(true)
+                .setDrawCubeProjection(true)
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .build();
+
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessor(aprilTag)
+                .build();
+
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        dashboard.startCameraStream(visionPortal, 30);
+        telemetry.addLine("AprilTag Vision Initialized");
+        telemetry.update();
 
 
         waitForStart();
@@ -114,8 +146,30 @@ public class TeleOp11_23 extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
-            distance = distanceSensor.getDistance(DistanceUnit.CM);
 
+            List<AprilTagDetection> detections = aprilTag.getDetections();
+
+            if (detections.size() == 0) {
+                telemetry.addLine("No AprilTag detected");
+            } else {
+                for (AprilTagDetection tag : detections) {
+
+                    telemetry.addLine("Tag Detected!");
+                    telemetry.addData("Tag ID", tag.id);
+
+                    // Distance straight ahead to tag (goal distance)
+                    telemetry.addData("Distance (in)",
+                            "%.2f", tag.ftcPose.z);
+
+                    // Horizontal offset (left/right)
+                    telemetry.addData("X Offset (in)",
+                            "%.2f", tag.ftcPose.x);
+
+                    // Rotation relative to tag
+                    telemetry.addData("Yaw (deg)",
+                            "%.2f", tag.ftcPose.yaw);
+                }
+            }
 
 
             //intake toggle
@@ -158,20 +212,27 @@ public class TeleOp11_23 extends LinearOpMode {
             if (gamepad2.b){
 
                 intake.setPower(intakeSpeed);
-                transfer.setPower(transferSpeed);
+                transfer.setPower(1);
                 isIntaking = true;
                 isLaunching = true;
             }
 
 
             if(isLaunching){
-                distance = distanceSensor.getDistance(DistanceUnit.CM);
 
+
+                /*
                 wheelSpeed = (0.00344595 * distance + 0.544257) * correction;
+                wheelSpeed *= flywheelRatioMult;
+
 
                 if(wheelSpeed > (0.92 * correction)){
                     wheelSpeed = 0.92 * correction;
                 }
+
+                 */
+
+
                 wheelLeft.setPower(wheelSpeed);
                 wheelRight.setPower(wheelSpeed);
             }
@@ -230,6 +291,7 @@ public class TeleOp11_23 extends LinearOpMode {
 
 
             }
+
             if (gamepad1.dpad_left) {
                 frontLeft.setPower(-turnCorrectionSpeed);
                 backLeft.setPower(-turnCorrectionSpeed);
@@ -246,13 +308,41 @@ public class TeleOp11_23 extends LinearOpMode {
 
             }
 
-            telemetry.addData("distance", distance);
+            if (gamepad1.dpad_up) {
+                frontLeft.setPower(turnCorrectionSpeed);
+                backLeft.setPower(turnCorrectionSpeed);
+                frontRight.setPower(turnCorrectionSpeed);
+                backRight.setPower(turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+            }
+            if (gamepad1.dpad_down) {
+                frontLeft.setPower(-turnCorrectionSpeed);
+                backLeft.setPower(-turnCorrectionSpeed);
+                frontRight.setPower(-turnCorrectionSpeed);
+                backRight.setPower(-turnCorrectionSpeed);
+
+                sleep(turnTime);
+
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+            }
+
+
             telemetry.addData("flywheel speed", wheelLeft.getPower());
             telemetry.addData("voltage", voltage);
             telemetry.addData("correction", correction);
             telemetry.update();
 
         }
+        visionPortal.close();
 
     }
 }
