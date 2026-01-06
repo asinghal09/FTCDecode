@@ -199,7 +199,7 @@ public class RedGoalLM3 extends LinearOpMode{
                         new ParallelAction(
                                 pickup3rdLine,
                                 new SequentialAction(
-                                        new SleepAction(1.25),
+                                        new SleepAction(1.5),
                                         transfer.transferOff()
                                 )
                         ),

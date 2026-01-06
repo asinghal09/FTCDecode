@@ -76,15 +76,15 @@ public class BlueGoalLM3 extends LinearOpMode{
         //2nd line path
         Action to2ndLine = drive.actionBuilder(mirror(new Pose2d (-28, 25, Math.toRadians(-52))))
                 .setReversed(false)
-                .splineToSplineHeading(mirror(new Pose2d(6.5,28, Math.toRadians(85))),mirror(Math.PI/2))
+                .splineToSplineHeading(mirror(new Pose2d(9,28, Math.toRadians(85))),mirror(Math.PI/2))
                 .build();
 
-        Action pickup2ndLine = drive.actionBuilder(mirror(new Pose2d(6.5,28, Math.toRadians(85))))
+        Action pickup2ndLine = drive.actionBuilder(mirror(new Pose2d(9,28, Math.toRadians(85))))
                 .lineToY(mirror(48), new TranslationalVelConstraint(10)) // forward into 2nd line of balls
                 .build();
 
 
-        Action toGoalWSecondLine = drive.actionBuilder(mirror(new Pose2d(6.5, 48, Math.toRadians(85))))
+        Action toGoalWSecondLine = drive.actionBuilder(mirror(new Pose2d(9, 48, Math.toRadians(85))))
                 .setReversed(true)
                 .splineToLinearHeading(mirror(new Pose2d(-28,25,Math.toRadians(-52))), mirror(26*Math.PI/35))
                 .build();
@@ -93,14 +93,14 @@ public class BlueGoalLM3 extends LinearOpMode{
         //3rd line path
         Action to3rdLine = drive.actionBuilder(mirror(new Pose2d (-28, 25, Math.toRadians(-52))))
                 .setReversed(false)
-                .splineToSplineHeading(mirror(new Pose2d(30,30, Math.toRadians(85))),mirror(0))
+                .splineToSplineHeading(mirror(new Pose2d(33.5,30, Math.toRadians(85))),mirror(0))
                 .build();
 
-        Action pickup3rdLine = drive.actionBuilder(mirror(new Pose2d(30,30, Math.toRadians(85))))
+        Action pickup3rdLine = drive.actionBuilder(mirror(new Pose2d(33.5,30, Math.toRadians(85))))
                 .lineToY(mirror(48), new TranslationalVelConstraint(10)) // forward into 2nd line of balls
                 .build();
 
-        Action toGoalWThirdLine = drive.actionBuilder(mirror(new Pose2d(29, 48, Math.toRadians(85))))
+        Action toGoalWThirdLine = drive.actionBuilder(mirror(new Pose2d(33.5, 48, Math.toRadians(85))))
                 .setReversed(true)
                 .splineToLinearHeading(mirror(new Pose2d(-28,25,Math.toRadians(-52))), mirror(26*Math.PI/35))
                 .build();
@@ -213,7 +213,7 @@ public class BlueGoalLM3 extends LinearOpMode{
                         new ParallelAction(
                                 pickup3rdLine,
                                 new SequentialAction(
-                                        new SleepAction(1.25),
+                                        new SleepAction(1.5),
                                         transfer.transferOff()
                                 )
                         ),
